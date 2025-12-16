@@ -15,6 +15,7 @@ private:
     std::vector<uint8_t> _table;
 
     void generate_3x3(size_t i, size_t j);
+    bool generate_9x9(size_t i, size_t j);
     
     bool check_line(size_t i, size_t j, uint8_t value);
     bool check_column(size_t i, size_t j, uint8_t value);
