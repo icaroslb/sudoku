@@ -1,6 +1,7 @@
 #include "table.h"
 #include <cstdlib>
 #include <cmath>
+#include <algorithm>
 
 const size_t COLUMN_SIZE = 9ul;
 const size_t LINE_SIZE = 9ul;
@@ -20,13 +21,35 @@ const size_t THIRD_BOX_COLUMN = 6ul;
 const uint8_t FIRST_NUM = 1u;
 const uint8_t LAST_NUM = 10u;
 
+const size_t WHITE_SPACE = 40ul;
+
 Table::Table(size_t seed) : _table(81u, 0u) {
-    
     srand(seed);
     generate_3x3(FIRST_BOX_LINE, FIRST_BOX_COLUMN);
     generate_3x3(SECOND_BOX_LINE, SECOND_BOX_COLUMN);
     generate_3x3(THIRD_BOX_LINE, THIRD_BOX_COLUMN);
     generate_9x9(FIRST_LINE, FIRST_COLUMN);
+
+    size_t qtd_space = 0ul;
+
+    while (qtd_space < WHITE_SPACE) {
+        size_t line;
+        size_t column;
+
+        do {
+            line = rand() % LINE_SIZE;
+            column = rand() % COLUMN_SIZE;
+        } while(this->operator()(line, column) == 0);
+
+        const uint8_t previous_value = this->operator()(line, column);
+        this->operator()(line, column) = 0;
+
+        if (check_unicity()) {
+            qtd_space += 1ul;
+        } else {
+            this->operator()(line, column) = previous_value;
+        }
+    }
 }
 
 uint8_t Table::operator()(size_t i, size_t j) const {
@@ -123,6 +146,44 @@ bool Table::check_box(size_t i, size_t j, uint8_t value){
 
 bool Table::check_pos(size_t i, size_t j, uint8_t value) {
     return check_line(i, j, value) && check_column(i, j, value) && check_box(i, j, value);
+}
+
+size_t Table::unicity(size_t i, size_t j) {
+    if (i == 9) {
+        return 0ul;
+    }
+
+    const size_t l = (j + 1ul) % 9ul;
+    const size_t k = i + ((l == 0ul) ? 1ul : 0ul);
+    size_t qtd_solutions = 0ul;
+
+    if (this->operator()(i, j) == 0) {
+        for (uint8_t value = FIRST_NUM; value < LAST_NUM; value++) {
+            if (check_line(i, j, value)
+             && check_column(i, j, value)
+             && check_box(i, j, value)) {
+                this->operator()(i, j) = value;
+
+                const size_t qtd_sub_solutions = unicity(k, l);
+
+                qtd_solutions += qtd_sub_solutions + 1ul;
+            }
+
+            this->operator()(i, j) = 0;
+        }
+    } else {
+        qtd_solutions = unicity(k, l);
+    }
+
+    return qtd_solutions;
+}
+
+bool Table::check_unicity() {
+    const size_t qtd_spaces = std::count_if(std::begin(_table), std::end(_table), [](const uint8_t &value) {
+        return value == 0;
+    });
+
+    return qtd_spaces == unicity(FIRST_LINE, FIRST_COLUMN);
 }
 
 std::ostream& operator<< (std::ostream& os, const Table& t) {

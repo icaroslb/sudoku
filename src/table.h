@@ -21,6 +21,9 @@ private:
     bool check_column(size_t i, size_t j, uint8_t value);
     bool check_box(size_t i, size_t j, uint8_t value);
     bool check_pos(size_t i, size_t j, uint8_t value);
+
+    size_t unicity(size_t i, size_t j);
+    bool check_unicity();
 };
 
 std::ostream& operator<< (std::ostream& os, const Table& t);
