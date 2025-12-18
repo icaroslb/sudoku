@@ -1,10 +1,14 @@
 #include <iostream>
-#include "src/table.h"
+#include <memory>
+#include "src/board/board.h"
+#include "src/generator/full_board_generator.h"
 
 int main() {
-    Table table{3};
+    Board board{};
+    std::shared_ptr<GeneratorInterface> generator = FullBoardGenerator::get_instance();
+    board = generator->generate(3, board);
 
-    std::cout << table <<std::endl;
+    std::cout << board <<std::endl;
 
     return 0;
 }
