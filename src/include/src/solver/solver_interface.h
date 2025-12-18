@@ -1,7 +1,7 @@
 #ifndef RESOLVER_H
 #define RESOLVER_H
 
-#include "../board/board.h"
+#include "data/board/board.h"
 
 enum class Solvability {
     NO_SOLVABLE,

@@ -1,7 +1,7 @@
 #ifndef CHECKER_H
 #define CHECKER_H
 
-#include "../board/board.h"
+#include "data/board/board.h"
 #include <cstdint>
 
 class Checker {

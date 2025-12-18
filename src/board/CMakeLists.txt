@@ -1,1 +1,0 @@
-add_library(board board.h board.cpp)

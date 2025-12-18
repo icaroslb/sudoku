@@ -1,7 +1,7 @@
 #ifndef GENERATOR_INTERFACE_H
 #define GENERATOR_INTERFACE_H
 
-#include "../board/board.h"
+#include "data/board/board.h"
 
 class GeneratorInterface {
 public:

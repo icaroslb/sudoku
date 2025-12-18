@@ -1,6 +1,6 @@
 #include <iostream>
 #include <memory>
-#include "src/board/board.h"
+#include "data/board/board.h"
 #include "src/generator/full_board_generator.h"
 
 int main() {
