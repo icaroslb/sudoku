@@ -2,6 +2,9 @@
 #include <cstdlib>
 #include <cmath>
 
+#include "../checker/checker.h"
+#include "../solver/force_brute_solver.h"
+
 const uint8_t COLUMN_SIZE = 9ul;
 const uint8_t LINE_SIZE = 9ul;
 const uint8_t QTD_NUMBER = 9ul;
@@ -48,6 +51,8 @@ Board FullBoardGenerator::generate(uint seed, const Board& board) {
 
     uint8_t qtd_space = 0ul;
 
+    std::shared_ptr<SolverInterface> solver = ForceBruteSolver::get_instance();
+
     while (qtd_space < WHITE_SPACE) {
         uint8_t line;
         uint8_t column;
@@ -60,7 +65,7 @@ Board FullBoardGenerator::generate(uint seed, const Board& board) {
         const uint8_t previous_value = return_board(line, column);
         return_board(line, column) = 0;
 
-        if (check_unicity(return_board)) {
+        if (solver->resolve(return_board) == Solvability::SOLVABLE) {
             qtd_space += 1ul;
         } else {
             return_board(line, column) = previous_value;
@@ -98,9 +103,9 @@ bool FullBoardGenerator::generate_9x9(uint8_t i, uint8_t j, Board &board) {
 
     if (board(i, j) == 0) {
         for (uint8_t value = FIRST_NUM; value < LAST_NUM; value++) {
-            if (check_line(i, j, value, board)
-             && check_column(i, j, value, board)
-             && check_box(i, j, value, board)) {
+            if (Checker::check_line(i, j, value, board)
+             && Checker::check_column(i, j, value, board)
+             && Checker::check_box(i, j, value, board)) {
                 board(i, j) = value;
 
                 if (generate_9x9(k, l, board)) {
@@ -115,81 +120,4 @@ bool FullBoardGenerator::generate_9x9(uint8_t i, uint8_t j, Board &board) {
     } else {
         return generate_9x9(k, l, board);
     }
-}
-
-bool FullBoardGenerator::check_line(uint8_t i, uint8_t j, uint8_t value, Board &board){
-    for (uint8_t l = 0; l < COLUMN_SIZE; l++) {
-        if (board(i, l) == value) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool FullBoardGenerator::check_column(uint8_t i, uint8_t j, uint8_t value, Board &board){
-    for (uint8_t k = 0; k < LINE_SIZE; k++) {
-        if (board(k, j) == value) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool FullBoardGenerator::check_box(uint8_t i, uint8_t j, uint8_t value, Board &board){
-    const uint8_t begin_line = i - (i % BOX_HEIGHT);
-    const uint8_t begin_column = j - (j % BOX_WIDTH);
-    const uint8_t end_line = begin_line + BOX_HEIGHT;
-    const uint8_t end_column = begin_column + BOX_WIDTH;
-
-    for (uint8_t k = i; k < end_line; k++) {
-        for (uint8_t l = j; l < end_column; l++) {
-            if (board(k, l) == value) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-bool FullBoardGenerator::check_pos(uint8_t i, uint8_t j, uint8_t value, Board &board) {
-    return check_line(i, j, value, board) && check_column(i, j, value, board) && check_box(i, j, value, board);
-}
-
-uint8_t FullBoardGenerator::unicity(uint8_t i, uint8_t j, Board &board) {
-    if (i == 9) {
-        return 0ul;
-    }
-
-    const uint8_t l = (j + 1ul) % 9ul;
-    const uint8_t k = i + ((l == 0ul) ? 1ul : 0ul);
-    uint8_t qtd_solutions = 0ul;
-
-    if (board(i, j) == 0) {
-        for (uint8_t value = FIRST_NUM; value < LAST_NUM; value++) {
-            if (check_line(i, j, value, board)
-             && check_column(i, j, value, board)
-             && check_box(i, j, value, board)) {
-                board(i, j) = value;
-
-                const uint8_t qtd_sub_solutions = unicity(k, l, board);
-
-                qtd_solutions += qtd_sub_solutions + 1ul;
-            }
-
-            board(i, j) = 0;
-        }
-    } else {
-        qtd_solutions = unicity(k, l, board);
-    }
-
-    return qtd_solutions;
-}
-
-bool FullBoardGenerator::check_unicity(Board &board) {
-    const uint8_t qtd_spaces = board.count_white_spaces();
-
-    return qtd_spaces == unicity(FIRST_LINE, FIRST_COLUMN, board);
 }

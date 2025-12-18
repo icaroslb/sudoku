@@ -1,0 +1,2 @@
+add_library(generator generator_interface.h full_board_generator.h full_board_generator.cpp)
+target_link_libraries(generator checker board)
