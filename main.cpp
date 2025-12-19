@@ -1,10 +1,12 @@
 #include <iostream>
-#include "src/table.h"
+#include <memory>
+#include "data/board/board.h"
+#include "src/generator/full_board_generator.h"
 
 int main() {
-    Table table{3};
+    Board board = FullBoardGenerator::generate(3);
 
-    std::cout << table <<std::endl;
+    std::cout << board <<std::endl;
 
     return 0;
 }
