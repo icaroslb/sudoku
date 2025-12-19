@@ -25,9 +25,9 @@ const uint8_t LAST_NUM = 10u;
 
 const uint8_t WHITE_SPACE = 20ul;
 
-Board FullBoardGenerator::generate(uint seed, const Board& board) {
+Board FullBoardGenerator::generate(uint seed) {
     srand(seed);
-    Board return_board = board;
+    Board return_board{};
 
     generate_3x3(FIRST_BOX_LINE, FIRST_BOX_COLUMN, return_board);
     generate_3x3(SECOND_BOX_LINE, SECOND_BOX_COLUMN, return_board);

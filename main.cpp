@@ -4,8 +4,7 @@
 #include "src/generator/full_board_generator.h"
 
 int main() {
-    Board board{};
-    board = FullBoardGenerator::generate(3, board);
+    Board board = FullBoardGenerator::generate(3);
 
     std::cout << board <<std::endl;
 

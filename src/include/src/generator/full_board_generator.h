@@ -19,7 +19,7 @@ public:
      * @param board Initial state board
      * @return Valid state board full filled
      */
-    static Board generate(uint seed, const Board& board);
+    static Board generate(uint seed);
 
 private:
     /**
