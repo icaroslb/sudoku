@@ -27,6 +27,7 @@ public:
     uint8_t count_white_spaces() const;
 
     friend std::ostream& operator<< (std::ostream& os, const Mask& m);
+    friend class Board;
 
 private:
     std::vector<MaskValue> _mask;

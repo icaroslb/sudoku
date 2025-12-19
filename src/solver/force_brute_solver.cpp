@@ -22,21 +22,6 @@ const uint8_t LAST_NUM = 10u;
 
 const uint8_t WHITE_SPACE = 20ul;
 
-std::weak_ptr<ForceBruteSolver> ForceBruteSolver::_instance;
-std::once_flag ForceBruteSolver::init_flag;
-
-std::shared_ptr<ForceBruteSolver> ForceBruteSolver::get_instance() {
-    std::shared_ptr<ForceBruteSolver> shared_instance = _instance.lock();
-    
-    if (!shared_instance) {
-        std::call_once(init_flag, [&]() {
-            shared_instance = std::shared_ptr<ForceBruteSolver>{new ForceBruteSolver{}};
-        });
-    }
-    
-    return shared_instance;
-}
-
 Solvability ForceBruteSolver::resolve(const Board& board) {
     const uint8_t qtd_spaces = board.count_white_spaces();
     Board check_board = board;

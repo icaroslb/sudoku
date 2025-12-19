@@ -6,8 +6,10 @@
 
 const uint8_t COLUMN_SIZE = 9ul;
 const uint8_t LINE_SIZE = 9ul;
+const uint8_t BOARD_SIZE = 81u;
+const uint8_t EMPTY_VALUE = 0u;
 
-Board::Board() : _board(81u, 0u) {}
+Board::Board() : _board(BOARD_SIZE, EMPTY_VALUE) {}
 
 Board::Board(const Board& board) : _board(board._board.size()) {
     std::copy(std::begin(board._board), std::end(board._board), std::begin(_board));
@@ -28,6 +30,16 @@ const uint8_t& Board::operator()(uint8_t i, uint8_t j) const {
 
 uint8_t& Board::operator()(uint8_t i, uint8_t j) {
     return _board[(i * COLUMN_SIZE) + j];
+}
+
+Board Board::apply_mask(const Mask& mask) {
+    Board board_masked;
+    
+    for (uint8_t i = 0u; i < BOARD_SIZE; i++) {
+        board_masked._board[i] = (mask._mask[i] == MaskValue::FILL) ? _board[i] : EMPTY_VALUE;
+    }
+
+    return board_masked;
 }
 
 uint8_t Board::count_white_spaces() const {

@@ -25,21 +25,6 @@ const uint8_t LAST_NUM = 10u;
 
 const uint8_t WHITE_SPACE = 20ul;
 
-std::weak_ptr<FullBoardGenerator> FullBoardGenerator::_instance;
-std::once_flag FullBoardGenerator::init_flag;
-
-std::shared_ptr<FullBoardGenerator> FullBoardGenerator::get_instance() {
-    std::shared_ptr<FullBoardGenerator> shared_instance = _instance.lock();
-    
-    if (!shared_instance) {
-        std::call_once(init_flag, [&]() {
-            shared_instance = std::shared_ptr<FullBoardGenerator>{new FullBoardGenerator{}};
-        });
-    }
-    
-    return shared_instance;
-}
-
 Board FullBoardGenerator::generate(uint seed, const Board& board) {
     srand(seed);
     Board return_board = board;
@@ -49,28 +34,26 @@ Board FullBoardGenerator::generate(uint seed, const Board& board) {
     generate_3x3(THIRD_BOX_LINE, THIRD_BOX_COLUMN, return_board);
     generate_9x9(FIRST_LINE, FIRST_COLUMN, return_board);
 
-    uint8_t qtd_space = 0ul;
+    // uint8_t qtd_space = 0ul;
 
-    std::shared_ptr<SolverInterface> solver = ForceBruteSolver::get_instance();
+    // while (qtd_space < WHITE_SPACE) {
+    //     uint8_t line;
+    //     uint8_t column;
 
-    while (qtd_space < WHITE_SPACE) {
-        uint8_t line;
-        uint8_t column;
+    //     do {
+    //         line = rand() % LINE_SIZE;
+    //         column = rand() % COLUMN_SIZE;
+    //     } while(return_board(line, column) == 0);
 
-        do {
-            line = rand() % LINE_SIZE;
-            column = rand() % COLUMN_SIZE;
-        } while(return_board(line, column) == 0);
+    //     const uint8_t previous_value = return_board(line, column);
+    //     return_board(line, column) = 0;
 
-        const uint8_t previous_value = return_board(line, column);
-        return_board(line, column) = 0;
-
-        if (solver->resolve(return_board) == Solvability::SOLVABLE) {
-            qtd_space += 1ul;
-        } else {
-            return_board(line, column) = previous_value;
-        }
-    }
+    //     if (ForceBruteSolver::resolve(return_board) == Solvability::SOLVABLE) {
+    //         qtd_space += 1ul;
+    //     } else {
+    //         return_board(line, column) = previous_value;
+    //     }
+    // }
 
     return return_board;
 }

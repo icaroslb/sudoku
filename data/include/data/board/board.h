@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <ostream>
 
+#include "data/mask/mask.h"
+
 class Board {
 public:
     Board();
@@ -14,6 +16,13 @@ public:
 
     const uint8_t& operator()(uint8_t i, uint8_t j) const;
     uint8_t& operator()(uint8_t i, uint8_t j);
+
+    /**
+     * Generates a board with mask applied
+     * @param mask Mask to be applied
+     * @return Board with mask applied
+     */
+    Board apply_mask(const Mask& mask);
 
     /**
      * Returns the quantity of white spaces
