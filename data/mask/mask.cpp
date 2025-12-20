@@ -1,49 +1,97 @@
 #include "mask.h"
-#include <cstdlib>
+#include "data/consts.h"
+
 #include <cmath>
-#include <algorithm>
+#include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
-const uint8_t COLUMN_SIZE = 9ul;
-const uint8_t LINE_SIZE = 9ul;
+const Hint middle{MIDDLE_BOARD_LINE, MIDDLE_BOARD_COLUMN};
 
-Mask::Mask() : _mask(81u, MaskValue::EMPTY) {}
+Mask::Mask() {}
 
-Mask::Mask(const Mask& mask) : _mask(mask._mask.size()) {
-    std::copy(std::begin(mask._mask), std::end(mask._mask), std::begin(_mask));
-}
+Mask::Mask(const Mask& mask) : _hints(mask._hints) {}
 
 Mask& Mask::operator=(const Mask& mask) {
     if (this != &mask) {
-        _mask.resize(mask._mask.size());
-        std::copy(std::begin(mask._mask), std::end(mask._mask), std::begin(_mask));
+        _hints = mask._hints;
     }
 
     return *this;
 }
 
-const MaskValue& Mask::operator()(uint8_t i, uint8_t j) const {
-    return _mask[(i * COLUMN_SIZE) + j];
+std::set<Hint>::iterator Mask::begin() {
+    return std::begin(_hints);
 }
 
-MaskValue& Mask::operator()(uint8_t i, uint8_t j) {
-    return _mask[(i * COLUMN_SIZE) + j];
+const std::set<Hint>::iterator Mask::begin() const {
+    return std::begin(_hints);
 }
 
-uint8_t Mask::count_white_spaces() const {
-    return std::count_if(std::begin(_mask), std::end(_mask), [](const MaskValue &value) {
-        return value == MaskValue::EMPTY;
-    });
+std::set<Hint>::iterator Mask::end() {
+    return std::end(_hints);
 }
 
-std::ostream& operator<< (std::ostream& os, const Mask& b) {
-    for (uint8_t i = 0; i < LINE_SIZE; i++) {
-        for (uint8_t j = 0; j < COLUMN_SIZE; j++) {
-            os << (uint)b(i, j) << ' ';
-        }
+const std::set<Hint>::iterator Mask::end() const {
+    return std::end(_hints);
+}
 
-        os << std::endl;
+bool Mask::insert_hint(const Hint& hint) {
+    return _hints.insert(hint).second;
+}
+
+std::set<Hint>::iterator Mask::find_hint_lower_bound(const Hint& hint) const {
+    return _hints.lower_bound(hint);
+}
+
+std::set<Hint>::iterator Mask::find_hint_upper_bound(const Hint& hint) const {
+    return _hints.upper_bound(hint);
+}
+
+bool Mask::remove_hint_lower_bound(const Hint& hint){
+    const auto lower_bound = find_hint_lower_bound(hint);
+    bool is_removed = false;
+
+    if (lower_bound != std::end(_hints)) {
+        _hints.erase(lower_bound);
+        is_removed = true;
     }
 
-    return os;
+    return is_removed;
+}
+
+bool Mask::remove_hint_upper_bound(const Hint& hint){
+    const auto upper_bound = find_hint_upper_bound(hint);
+    bool is_removed = false;
+
+    if (upper_bound != std::end(_hints)) {
+        _hints.erase(upper_bound);
+        is_removed = true;
+    }
+
+    return is_removed;
+}
+
+uint8_t Mask::count_hints() const {
+    return _hints.size();
+}
+
+Mask Mask::mix(const Mask& mask) const {
+    const Hint middle_hint{MIDDLE_BOARD_LINE, MIDDLE_BOARD_COLUMN};
+    Mask new_mask{};
+
+    auto hints0 = find_hint_lower_bound(middle_hint)++;
+    auto hints1 = mask.find_hint_upper_bound(middle_hint);
+
+    do {
+        hints0--;
+        new_mask.insert_hint(*hints0);
+    } while (hints0 != std::begin(_hints));
+
+    while (hints1 != std::end(mask._hints)) {
+        new_mask.insert_hint(*hints1);
+        hints1++;
+    }
+
+    return new_mask;
 }

@@ -1,11 +1,9 @@
 #ifndef FULL_BOARD_GENERATOR_H
 #define FULL_BOARD_GENERATOR_H
 
-#include <memory>
-#include <mutex>
-#include <cstdint>
-
 #include "data/board/board.h"
+
+#include <cstdint>
 
 class FullBoardGenerator{
 public:
@@ -14,9 +12,8 @@ public:
     FullBoardGenerator& operator=(const FullBoardGenerator&) = delete;
 
     /**
-     * Recives a board and return a valid state board full filled
+     * Generates a valid state board full filled
      * @param seed Seed used in random number generator
-     * @param board Initial state board
      * @return Valid state board full filled
      */
     static Board generate(uint seed);

@@ -1,11 +1,11 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "data/mask/mask.h"
+
 #include <vector>
 #include <cstdint>
 #include <ostream>
-
-#include "data/mask/mask.h"
 
 class Board {
 public:
@@ -22,7 +22,7 @@ public:
      * @param mask Mask to be applied
      * @return Board with mask applied
      */
-    Board apply_mask(const Mask& mask);
+    Board apply_mask(const Mask& mask) const;
 
     /**
      * Returns the quantity of white spaces

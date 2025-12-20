@@ -1,5 +1,5 @@
-#ifndef RESOLVER_H
-#define RESOLVER_H
+#ifndef SOLVABILITY_H
+#define SOLVABILITY_H
 
 enum class Solvability {
     NO_SOLVABLE,
@@ -14,4 +14,4 @@ enum class Solvability {
     SUPER_HARD
 };
 
-#endif // RESOLVER_H
+#endif // SOLVABILITY_H

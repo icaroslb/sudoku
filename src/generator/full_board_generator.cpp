@@ -1,29 +1,8 @@
 #include "full_board_generator.h"
-#include <cstdlib>
-#include <cmath>
+#include "data/consts.h"
+#include "src/checker/checker.h"
+#include "src/solver/force_brute_solver.h"
 
-#include "../checker/checker.h"
-#include "../solver/force_brute_solver.h"
-
-const uint8_t COLUMN_SIZE = 9ul;
-const uint8_t LINE_SIZE = 9ul;
-const uint8_t QTD_NUMBER = 9ul;
-const uint8_t BOX_WIDTH = 3ul;
-const uint8_t BOX_HEIGHT = 3ul;
-
-const uint8_t FIRST_LINE = 0ul;
-const uint8_t FIRST_COLUMN = 0ul;
-const uint8_t FIRST_BOX_LINE = 0ul;
-const uint8_t FIRST_BOX_COLUMN = 0ul;
-const uint8_t SECOND_BOX_LINE = 3ul;
-const uint8_t SECOND_BOX_COLUMN = 3ul;
-const uint8_t THIRD_BOX_LINE = 6ul;
-const uint8_t THIRD_BOX_COLUMN = 6ul;
-
-const uint8_t FIRST_NUM = 1u;
-const uint8_t LAST_NUM = 10u;
-
-const uint8_t WHITE_SPACE = 20ul;
 
 Board FullBoardGenerator::generate(uint seed) {
     srand(seed);
@@ -33,27 +12,6 @@ Board FullBoardGenerator::generate(uint seed) {
     generate_3x3(SECOND_BOX_LINE, SECOND_BOX_COLUMN, return_board);
     generate_3x3(THIRD_BOX_LINE, THIRD_BOX_COLUMN, return_board);
     generate_9x9(FIRST_LINE, FIRST_COLUMN, return_board);
-
-    // uint8_t qtd_space = 0ul;
-
-    // while (qtd_space < WHITE_SPACE) {
-    //     uint8_t line;
-    //     uint8_t column;
-
-    //     do {
-    //         line = rand() % LINE_SIZE;
-    //         column = rand() % COLUMN_SIZE;
-    //     } while(return_board(line, column) == 0);
-
-    //     const uint8_t previous_value = return_board(line, column);
-    //     return_board(line, column) = 0;
-
-    //     if (ForceBruteSolver::resolve(return_board) == Solvability::SOLVABLE) {
-    //         qtd_space += 1ul;
-    //     } else {
-    //         return_board(line, column) = previous_value;
-    //     }
-    // }
 
     return return_board;
 }
@@ -71,18 +29,19 @@ void FullBoardGenerator::generate_3x3(uint8_t i, uint8_t j, Board &board) {
             }
 
             number_mask = number_mask | (mask << new_number);
-            board(k, l) = new_number + 1;
+            board(k, l) = new_number + 1u;
         }
     }
 }
 
 bool FullBoardGenerator::generate_9x9(uint8_t i, uint8_t j, Board &board) {
-    if (i == 9) {
+    if (i == COLUMN_SIZE) {
         return true;
     }
 
-    const uint8_t l = (j + 1ul) % 9ul;
-    const uint8_t k = i + ((l == 0ul) ? 1ul : 0ul);
+    // Get next column and line position
+    const uint8_t l = (j + 1u) % LINE_SIZE;
+    const uint8_t k = i + ((l == 0) ? 1u : 0u);
 
     if (board(i, j) == 0) {
         for (uint8_t value = FIRST_NUM; value < LAST_NUM; value++) {
@@ -94,7 +53,7 @@ bool FullBoardGenerator::generate_9x9(uint8_t i, uint8_t j, Board &board) {
                 if (generate_9x9(k, l, board)) {
                     return true;
                 } else {
-                    board(i, j) = 0;
+                    board(i, j) = 0u;
                 }
             }
         }

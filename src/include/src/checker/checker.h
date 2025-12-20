@@ -2,6 +2,7 @@
 #define CHECKER_H
 
 #include "data/board/board.h"
+
 #include <cstdint>
 
 class Checker {

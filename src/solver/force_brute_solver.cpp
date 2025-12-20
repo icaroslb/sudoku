@@ -1,26 +1,6 @@
 #include "force_brute_solver.h"
-
-#include "../checker/checker.h"
-
-const uint8_t COLUMN_SIZE = 9ul;
-const uint8_t LINE_SIZE = 9ul;
-const uint8_t QTD_NUMBER = 9ul;
-const uint8_t BOX_WIDTH = 3ul;
-const uint8_t BOX_HEIGHT = 3ul;
-
-const uint8_t FIRST_LINE = 0ul;
-const uint8_t FIRST_COLUMN = 0ul;
-const uint8_t FIRST_BOX_LINE = 0ul;
-const uint8_t FIRST_BOX_COLUMN = 0ul;
-const uint8_t SECOND_BOX_LINE = 3ul;
-const uint8_t SECOND_BOX_COLUMN = 3ul;
-const uint8_t THIRD_BOX_LINE = 6ul;
-const uint8_t THIRD_BOX_COLUMN = 6ul;
-
-const uint8_t FIRST_NUM = 1u;
-const uint8_t LAST_NUM = 10u;
-
-const uint8_t WHITE_SPACE = 20ul;
+#include "src/checker/checker.h"
+#include "data/consts.h"
 
 Solvability ForceBruteSolver::resolve(const Board& board) {
     const uint8_t qtd_spaces = board.count_white_spaces();
@@ -35,13 +15,14 @@ Solvability ForceBruteSolver::resolve(const Board& board) {
 }
 
 uint8_t ForceBruteSolver::unicity(uint8_t i, uint8_t j, Board &board) {
-    if (i == 9) {
-        return 0ul;
+    if (i == COLUMN_SIZE) {
+        return 0u;
     }
 
-    const uint8_t l = (j + 1ul) % 9ul;
-    const uint8_t k = i + ((l == 0ul) ? 1ul : 0ul);
-    uint8_t qtd_solutions = 0ul;
+    // Get next column and line position
+    const uint8_t l = (j + 1u) % LINE_SIZE;
+    const uint8_t k = i + ((l == 0u) ? 1u : 0u);
+    uint8_t qtd_solutions = 0u;
 
     if (board(i, j) == 0) {
         for (uint8_t value = FIRST_NUM; value < LAST_NUM; value++) {
@@ -52,7 +33,7 @@ uint8_t ForceBruteSolver::unicity(uint8_t i, uint8_t j, Board &board) {
 
                 const uint8_t qtd_sub_solutions = unicity(k, l, board);
 
-                qtd_solutions += qtd_sub_solutions + 1ul;
+                qtd_solutions += qtd_sub_solutions + 1u;
             }
 
             board(i, j) = 0;

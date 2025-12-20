@@ -1,13 +1,10 @@
 #include "board.h"
-#include <cstdlib>
-#include <cmath>
-#include <algorithm>
-#include <iostream>
+#include "data/consts.h"
 
-const uint8_t COLUMN_SIZE = 9ul;
-const uint8_t LINE_SIZE = 9ul;
-const uint8_t BOARD_SIZE = 81u;
-const uint8_t EMPTY_VALUE = 0u;
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
 
 Board::Board() : _board(BOARD_SIZE, EMPTY_VALUE) {}
 
@@ -32,12 +29,12 @@ uint8_t& Board::operator()(uint8_t i, uint8_t j) {
     return _board[(i * COLUMN_SIZE) + j];
 }
 
-Board Board::apply_mask(const Mask& mask) {
-    Board board_masked;
+Board Board::apply_mask(const Mask& mask) const {
+    Board board_masked{};
     
-    for (uint8_t i = 0u; i < BOARD_SIZE; i++) {
-        board_masked._board[i] = (mask._mask[i] == MaskValue::FILL) ? _board[i] : EMPTY_VALUE;
-    }
+    std::for_each(std::begin(mask), std::end(mask), [&](const Hint& hint){
+        board_masked(hint.line(), hint.column()) = this->operator()(hint.line(), hint.column());
+    });
 
     return board_masked;
 }

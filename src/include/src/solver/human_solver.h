@@ -1,16 +1,16 @@
-#ifndef FORCE_BRUTE_SOLVER_H
-#define FORCE_BRUTE_SOLVER_H
+#ifndef HUMAN_SOLVER_H
+#define HUMAN_SOLVER_H
 
 #include "solvability.h"
 #include "data/board/board.h"
 
 #include <cstdint>
 
-class ForceBruteSolver {
+class HumanSolver {
 public:
-    ForceBruteSolver() = delete;
-    ForceBruteSolver(const ForceBruteSolver&) = delete;
-    ForceBruteSolver& operator=(const ForceBruteSolver&) = delete;
+    HumanSolver() = delete;
+    HumanSolver(const HumanSolver&) = delete;
+    HumanSolver& operator=(const HumanSolver&) = delete;
 
     /**
      * Checks the board solvability
@@ -27,7 +27,7 @@ private:
      * @param board Board to be checked
      * @return Quantity possible numbers the cell (i, j) can have
      */
-    static uint8_t unicity(uint8_t i, uint8_t j, Board &board);
+    static uint8_t last_free_cell(uint8_t i, uint8_t j, Board &board);
 };
 
-#endif // FORCE_BRUTE_SOLVER_H
+#endif // HUMAN_SOLVER_H

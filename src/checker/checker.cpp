@@ -1,9 +1,5 @@
 #include "checker.h"
-
-const uint8_t COLUMN_SIZE = 9ul;
-const uint8_t LINE_SIZE = 9ul;
-const uint8_t BOX_WIDTH = 3ul;
-const uint8_t BOX_HEIGHT = 3ul;
+#include "data/consts.h"
 
 bool Checker::check_line(uint8_t i, uint8_t j, uint8_t value, Board &board){
     for (uint8_t l = 0; l < COLUMN_SIZE; l++) {

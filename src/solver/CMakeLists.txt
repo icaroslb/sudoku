@@ -2,10 +2,13 @@ set(SOLVER_INCLUDE ${INCLUDE_PATH}/src/solver)
 
 set(include_file_group
     ${SOLVER_INCLUDE}/force_brute_solver.h
+    ${SOLVER_INCLUDE}/human_solver.h
+    ${SOLVER_INCLUDE}/solvability.h
 )
 
 set(source_file_group
     force_brute_solver.cpp
+    human_solver.cpp
 )
 
 add_library(solver ${include_file_group} ${source_file_group})
